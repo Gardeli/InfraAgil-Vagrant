@@ -8,7 +8,9 @@ Vagrant.configure("2") do |config|
     echo "127.0.0.1 localhost
 192.168.70.10 default.dexter.com.br default
 192.168.70.11 automation.dexter.com.br automation
-192.168.70.12 devops.dexter.com.br devops" > /etc/hosts
+192.168.70.12 devops.dexter.com.br devops 
+192.168.70.13 web.dexter.com.br web" > /etc/hosts
+
     chattr -i /etc/resolv.conf 
     rm -f /etc/resolv.conf
     echo "search dexter.com.br
@@ -86,8 +88,21 @@ HTBpjiTBYL+ZlXcfWJSrNI7HBqeGLjOyJDMtMd7rxqbVksbHxTaEIb1XfV2QtkoU
     config.vm.provider "virtualbox" do |devops|
       devops.memory = "1024"
     end
-
   end
 
+# WEB
+  config.vm.define "web" do |web|
+    web.vm.box = "centos/7"
+    web.vm.hostname = "web"
+    web.vm.network "private_network", ip: "192.168.70.13", dns: "8.8.8.8"
+
+    web.vm.provision "shell", inline: <<-SHELL
+      yum install vim -y
+    SHELL
+
+    config.vm.provider "virtualbox" do |web|
+      web.memory = "3072"
+    end
+  end
 
 end
